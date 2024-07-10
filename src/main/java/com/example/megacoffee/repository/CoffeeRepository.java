@@ -1,8 +1,9 @@
-package com.example.megacoffee.Coffee;
+package com.example.megacoffee.repository;
 // Rest API 개발
 // 클라이언트 -> 서버[데이터]
 // Controller[경로 지정]
 // Repository[DB에서 데이터 가져오는 역할]
+import com.example.megacoffee.model.Coffee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

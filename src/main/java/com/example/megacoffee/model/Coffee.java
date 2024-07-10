@@ -1,4 +1,4 @@
-package com.example.megacoffee.Coffee;
+package com.example.megacoffee.model;
 
 import jakarta.persistence.*;
 import lombok.*;
