@@ -1,15 +1,17 @@
 package com.example.megacoffee.status;
 
-public enum Status {
+public enum ResponseStatus {
     SUCCESS(200, "Success"),
-    ERROR(500, "Error"),
+    FAIL(400,"Bad Request"),
+    UNAUTHORIZED(401, "Unauthorized"),
     NOT_FOUND(404, "Not Found"),
-    UNAUTHORIZED(401, "Unauthorized");
+    ERROR(500, "Error");
+
 
     private final int code;
     private final String description;
 
-    Status(int code, String description) {
+    ResponseStatus(int code, String description) {
         this.code = code;
         this.description = description;
     }

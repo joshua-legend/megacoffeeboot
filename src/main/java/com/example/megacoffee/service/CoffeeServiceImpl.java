@@ -2,6 +2,7 @@ package com.example.megacoffee.service;
 
 import com.example.megacoffee.model.Coffee;
 import com.example.megacoffee.repository.CoffeeRepository;
+import com.example.megacoffee.status.ResultStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +16,15 @@ public class CoffeeServiceImpl implements CoffeeService {
     private CoffeeRepository coffeeRepository;
 
     @Override
-    public String addCoffee(Coffee coffee) {
+    public ResultStatus addCoffee(Coffee coffee) {
         if (coffee.getName() == null || coffee.getName().isEmpty()) {
-            throw new IllegalArgumentException("Coffee name must not be null or empty");
+            return ResultStatus.FAIL;
         }
         if (coffee.getPrice() < 0) {
-            throw new IllegalArgumentException("Coffee price must be greater than zero");
+            return ResultStatus.FAIL;
         }
         coffeeRepository.save(coffee);
-        return "성공";
+        return ResultStatus.SUCCESS;
     }
 
     @Override
