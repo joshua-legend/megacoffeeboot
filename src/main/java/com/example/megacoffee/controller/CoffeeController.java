@@ -6,6 +6,8 @@ import com.example.megacoffee.service.CoffeeService;
 import com.example.megacoffee.status.ResponseStatus;
 import com.example.megacoffee.status.ResultStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +40,15 @@ public class CoffeeController {
     }
 
     @GetMapping("/price")
-    public ResponseEntity<ApiResponse<List<Coffee>>> getCoffeesByPriceRange(@RequestParam int min, @RequestParam int max) {
+    public ResponseEntity<ApiResponse<?>> getCoffeesByPriceRange(@RequestParam(required = true) int min,
+                                                    @RequestParam(required = true) int max) {
+        if (min < 0) {
+            ApiResponse<String> response = new ApiResponse<>(ResponseStatus.FAIL, "Bad Request", "Success");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         List<Coffee> coffees = coffeeService.getCoffeesByPriceRange(min, max);
-        ApiResponse<List<Coffee>> response = new ApiResponse<>(ResponseStatus.SUCCESS, "Fetched coffees by price range", coffees);
-        return ResponseEntity.ok(response);
+        ApiResponse<List<Coffee>> response = new ApiResponse<>(ResponseStatus.SUCCESS, "SUCCESS", coffees);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping
@@ -67,4 +74,20 @@ public class CoffeeController {
         }
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<Object> getTest() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("엄준식");
+    }
+
+    @GetMapping("/example")
+    public ResponseEntity<ApiResponse<String>> getExample() {
+        ApiResponse<String> apiResponse = new ApiResponse<>(ResponseStatus.ERROR, "Bad request", null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ApiResponse<String> apiResponse = new ApiResponse<>(ResponseStatus.ERROR, ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
+    }
 }

@@ -33,8 +33,11 @@ public class CoffeeServiceImpl implements CoffeeService {
     }
 
     @Override
-    public List<Coffee> getCoffeesByPriceRange(int minPrice, int maxPrice) {
-        return coffeeRepository.findByPrice(minPrice, maxPrice);
+    public List<Coffee> getCoffeesByPriceRange(int min, int max) {
+        if (min < 0) {
+            throw new IllegalArgumentException("min cannot be less than 0");
+        }
+        return coffeeRepository.findByPrice(min, max);
     }
 
     @Override
