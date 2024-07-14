@@ -1,9 +1,11 @@
-package com.example.megacoffee.model;
+package com.example.megacoffee.controller;
 
 
 import com.example.megacoffee.dto.ApiResponse1;
 import com.example.megacoffee.jwt.JwtUtil;
-import jakarta.servlet.http.Cookie;
+import com.example.megacoffee.model.Admin;
+import com.example.megacoffee.service.AdminDetailsService;
+import com.example.megacoffee.service.AdminServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class AdminController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImpl adminService;
 
     @Autowired
     private AdminDetailsService adminDetailsService;

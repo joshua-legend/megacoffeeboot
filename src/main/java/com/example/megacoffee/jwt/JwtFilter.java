@@ -1,7 +1,7 @@
 package com.example.megacoffee.jwt;
 
 import com.example.megacoffee.dto.ApiResponse;
-import com.example.megacoffee.model.AdminDetailsService;
+import com.example.megacoffee.service.AdminDetailsService;
 import com.example.megacoffee.status.ResponseStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

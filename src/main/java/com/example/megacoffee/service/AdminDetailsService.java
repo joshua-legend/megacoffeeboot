@@ -1,5 +1,7 @@
-package com.example.megacoffee.model;
+package com.example.megacoffee.service;
 
+import com.example.megacoffee.model.Admin;
+import com.example.megacoffee.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
