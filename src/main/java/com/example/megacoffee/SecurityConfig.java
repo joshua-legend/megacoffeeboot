@@ -1,5 +1,8 @@
 package com.example.megacoffee;
 
+import com.example.megacoffee.jwt.JwtFilter;
+import com.example.megacoffee.jwt.JwtUtil;
+import com.example.megacoffee.model.AdminDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -7,20 +10,46 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
 
+    private final AdminDetailsService adminDetailsService;
+    private final JwtUtil jwtUtil;
+
+
+    public SecurityConfig(AdminDetailsService adminDetailsService, JwtUtil jwtUtil) {
+        this.adminDetailsService = adminDetailsService;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> auth.anyRequest().permitAll())
-            // HTTP 기본 인증을 사용하지 않습니다. (옵션: 필요에 따라 비활성화 가능)
-            .httpBasic(Customizer.withDefaults())
-            // CSRF 보호를 비활성화합니다. REST API의 경우 일반적으로 비활성화합니다.
-            .csrf(AbstractHttpConfigurer::disable);
-            // SecurityFilterChain을 빌드하여 반환합니다.
+        JwtFilter jwtFilter = new JwtFilter(jwtUtil, adminDetailsService);
+
+        // CSRF(사이트 간 요청 위조) 보호 기능을 끕니다. CSRF는 주로 브라우저를 통해 로그인한 사용자를 보호하기 위해 사용됩니다.
+        http.csrf(csrf -> csrf.disable())
+                // 세션 관리 정책을 설정합니다. 여기서는 STATELESS(상태 없음)로 설정하여, 서버가 세션을 유지하지 않도록 합니다.
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 요청에 대한 보안 규칙을 설정합니다.
+                .authorizeHttpRequests(authorize -> authorize
+                        // **로 끝나는 모든 경로는 인증 없이 접근할 수 있도록 허용합니다.
+                        .requestMatchers("**").permitAll() // 예: "/home", "/about", 등
+                        .anyRequest().authenticated()
+                ).
+                addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

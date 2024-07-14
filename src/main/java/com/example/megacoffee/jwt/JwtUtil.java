@@ -1,6 +1,6 @@
 package com.example.megacoffee.jwt;
 
-import com.example.megacoffee.model.User;
+import com.example.megacoffee.model.Admin;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -20,11 +20,11 @@ public class JwtUtil {
     private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     // JWT 생성
-    public static String generateToken(User user) {
+    public static String generateToken(Admin admin) {
         return Jwts.builder()
-                .claim("username", user.getUserId())
+                .claim("username", admin.getAdminId())
                 // 사용자 ID를 주체로 설정
-                .subject(user.getUserId())
+                .subject(admin.getAdminId())
                 // 토큰이 발급된 시간을 현재 시간으로 설정
                 .issuedAt(new Date(System.currentTimeMillis()))
                 // 토큰의 만료 시간을 현재 시간으로부터 10초 후로 설정
